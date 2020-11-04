@@ -1,0 +1,51 @@
+{{ MODAL .VIEW.EditForm . }}
+<div class="row">
+	<div class="col-lg-10">
+    
+		<table
+		  id="table-{{ .VIEW_ID }}"
+		  data-toolbar="#toolbar-{{ .VIEW_ID }}"
+		  data-toggle="table"
+
+		  data-id-field="id"
+		  data-click-to-select="true"
+		  data-url="{{ .TABLE_URL }}"
+		  data-response-handler="responseTableHandler">
+		</table>
+
+	</div>
+</div>
+
+<script>
+	
+class tableEdit {
+  constructor() {
+    this.edit_form = "{{ .VIEW.EditForm }}";
+    this.view_url = "{{ .VIEW.ViewItemUrl }}";
+    this.read_item_url = "{{ .READ_ITEM_URL }}";
+    this.write_item_url = "{{ .WRITE_ITEM_URL }}";
+    this.table = $('#table-{{ .VIEW_ID }}');
+  }
+  
+  $this.table.bootstrapTable('destroy').bootstrapTable({
+      locale: "{{ TR_LANG }}", //$('#locale').val(),
+      columns: [
+      {{ range .VIEW.Table.Columns }}
+        {
+          field: '{{ .Field }}',
+          title: '{{ .Title }}',
+          sortable: {{ .Sortable }},
+          align: '{{ .Align }}'
+        },
+      {{ end }}
+        {
+          field: 'operate',
+          title: '{{ TR "Действия" }}',
+          align: 'left',
+          clickToSelect: false,
+          events: window.operateEvents,
+          formatter: operateFormatter
+        }]
+    })
+}
+</script>

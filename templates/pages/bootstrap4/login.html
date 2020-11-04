@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <title>{{ Title }}</title>
+  </head>
+  <body>
+
+<div class="container">
+  <div class="d-flex justify-content-center h-100">
+    <div class="card">
+      <div class="card-header">
+        <h3>Вход</h3>
+      </div>
+      <div class="card-body">
+        <form method="post" enctype="application/x-www-form-urlencoded">
+
+          <div class="input-group form-group" id="group-mailru" name="group-mailru">
+            <div class="mailru-login-button" data-ui="login_as userpic" data-type="login" style="width: 300px; height: 48px;"></div>
+            <!-- a href="https://connect.mail.ru/oauth/authorize?client_id={{ .MailRu_client_id }}&redirect_uri={{ .MailRu_Redirect }}&response_type=token&scope=userinfo&state={{ .OAuth_state }}"><img src="/static/img/mail-ru.png"></a -->
+          </div>
+
+          <div class="input-group form-group" id="group-yandexru" name="group-yandexru">
+            <!-- a href="#" onClick="MyWindow=window.open('https://oauth.yandex.ru/authorize?response_type=code&client_id={{ .YandexRu_client_id }}&redirect_uri={{ .YandexRu_Redirect }}&force_confirm=yes&state={{ .OAuth_state }}','Yandex','width=600,height=500'); return false;"><img src="/static/img/yandex.png"></a -->
+            <a href="https://oauth.yandex.ru/authorize?response_type=code&client_id={{ .YandexRu_client_id }}&redirect_uri={{ .YandexRu_Redirect }}&force_confirm=yes&state={{ .OAuth_state }}"><img src="/static/img/yandex.png"></a>
+          </div>
+
+          <div class="input-group form-group" id="group-login" name="group-login">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+            </div>
+            <input type="text" id="login" name="login" class="form-control" placeholder="логин">
+          </div>
+          <div class="input-group form-group" id="group-password" name="group-password">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-key"></i></span>
+            </div>
+            <input type="password" id="password" name="password" class="form-control" placeholder="пароль">
+          </div>
+          <div class="input-group form-group">
+            <select class="form-control" id="auth_code" name="auth_code">
+              {{ range .Auth }}
+              <option value="{{.Name}}">{{.Name}}</option>
+              {{ end }}
+            </select>
+          </div>
+          <div class="row align-items-center remember" id="group-remember" name="group-remember">
+            <input type="checkbox">Запомнить меня
+          </div>
+          <div class="form-group" id="group-submit" name="group-submit">
+            <input type="submit" value="Войти" class="btn float-right login_btn">
+          </div>
+        </form>
+      </div>
+      <div class="card-footer"  id="group-footer" name="group-footer">
+        <div class="d-flex justify-content-center links">
+          Вы ещё не зарегистрированы?<a href="#">Зарегистрироваться</a>
+        </div>
+        <div class="d-flex justify-content-center">
+          <a href="#">Забыли пароль?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<script src="https://oauth.mail.ru/sdk/v0.14.0/oauth.js"></script>
+<script>
+	MR.init({
+		clientId: '8826a98e522d4d879e1dddf2bfc43cce',
+		onlogin: function (state) {
+			if (state.user) {
+			  //console.info('MR.login:', state);
+			  window.location.replace('/oauth/mailru/callback?token='+state.access_token);
+			}
+		},
+		onlogout: function () {
+			//console.info('MR.logout');
+			window.location.replace('/logout');
+		}
+	});
+</script>
+
+<script>
+  var oauth_state = "{{ .OAuth_state }}";
+  var mailru_redirect_uri = "{{ .MailRu_Redirect }}";
+  var mailru_client_id = "{{ .MailRu_client_id }}";
+  var yandexru_redirect_uri = "{{ .YandexRu_Redirect }}";
+  var yandexru_client_id = "{{ .YandexRu_client_id }}";
+
+  function HideAll() {
+   $("#group-remember").hide();
+   $("#group-submit").hide();
+   $("#group-footer").hide();
+   $("#group-login").hide();
+   $("#group-password").hide();
+  }
+
+  function ShowAll() {
+   $("#group-remember").show();
+   $("#group-submit").show();
+   $("#group-footer").show();
+   $("#group-login").show();
+   $("#group-password").show();
+  }
+
+  $( "#auth_code" ).change(function () {
+    if($( "option:selected", this ).val()=="mail.ru"){
+         $("#group-mailru").show();
+         $("#group-yandexru").hide();
+         HideAll();
+      }else{
+         if($( "option:selected", this ).val()=="yandex.ru"){
+           $("#group-yandexru").show();
+           $("#group-mailru").hide();
+           HideAll();
+         } else {
+           $("#group-mailru").hide();
+           $("#group-yandexru").hide();
+           ShowAll();
+         }
+      }
+  });
+
+  $('#auth_code').trigger('change');
+  window.addEventListener('message',  updateAuthInfo);// 3. update html when event is detected
+
+  function  updateAuthInfo(e){
+    console.log("EVENT: ", e);
+    if(popup) {
+      popup.close();
+    }
+  }
+</script>
+  </body>
+</html>

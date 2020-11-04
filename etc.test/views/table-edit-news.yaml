@@ -1,0 +1,30 @@
+code: table_edit_news
+title: Новости
+template: table_edit
+table_url: /api/public/public_news?order=public_at&select=id,title,public_at,description
+read_item_url: /api/back-office/public_news/
+write_item_url: /api/back-office/public_news
+view_item_url: /page/1news/ru_RU?item=
+main_model: public_news
+edit_form: news
+table:
+  url: /api/news?select=id,title,public_at
+  columns:
+    -
+      title: ID
+      field: id
+      sortable: false
+      align: center
+      order: 10
+    -
+      title: Title
+      field: title
+      sortable: true
+      align: left
+      order: 20
+    -
+      title: Public At
+      field: public_at
+      sortable: true
+      align: center
+      order: 30

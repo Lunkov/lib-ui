@@ -1,0 +1,145 @@
+--- 
+code: request_gpzu
+title: "Заявление на выдачу ГПЗУ"
+description: "Выдержка из административного регламента:\n п. 2.6. Для получения государственной услуги заявитель самостоятельно представляет следующие документы:\n 1) заявление о выдаче градостроительного плана земельного участка\n 2) документ, подтверждающий полномочия представителя заявителя, в случае, если с заявлением о предоставлении государственной услуги обращается представитель заявителя\n"
+version: 1
+date: 2019/10/1
+date_finish: 2300/1/15
+date_start: 2019/10/1
+table: request
+buttons: 
+  - 
+    code: submit
+    title: Сохранить
+    order: 10
+  - 
+    code: close
+    title: Закрыть
+    order: 20
+properties: 
+  -
+    code: municipality
+    table: municipality
+    title: Муниципалитет
+    type: string
+    widget: select-mdm
+    required: true
+    order: 10
+  -
+    code: owner.address.fias
+    table: fias
+    title: "Выбор адреса из ФИАС"
+    type: integer
+    widget: select-mdm
+    required: true
+    order: 20
+  -
+    code: owner.type
+    title: Правообладатель
+    type: string
+    widget: radio
+    required: true
+    default: 1
+    oneOfConst: subject_type
+    order: 30
+  -
+    code: owner.fio
+    visibleIf: owner.type==1
+    title: ФИО
+    type: string
+    widget: text
+    order: 40
+  -
+    code: result.delivery
+    title: Способ получения результата
+    type: string
+    widget: radio
+    OneOfConst: get_result
+    order: 50
+  -
+    code: zu.right
+    title: Вид права на ЗУ
+    type: string
+    widget: text
+    order: 60
+  -
+    code: docs.oot
+    title: Сведения о границах и режимах особо охраняемых природных территорий и их охранных зон, сведения о природных и озелененных территориях, режимах использования и ограничениях использования земельных участков и объектов капитального строительства в границах указанных территорий
+    type: string
+    widget: file
+    order: 70
+  -
+    code: docs.egrul
+    title: Выписка из ЕГРЮЛ
+    type: string
+    widget: file
+    order: 80
+  -
+    code: docs.egrip
+    title: Выписка из ЕГРИП
+    type: string
+    widget: file
+    order: 90
+  -
+    code: docs.kp
+    title: Кадастровый паспорт
+    type: string
+    widget: file
+    order: 100
+tabs: 
+  -
+    code: applicant
+    title: "Заявитель"
+    order: 10
+    fields: 
+      - applicant.type
+      - applicant.fio
+      - applicant.birthday
+      - applicant.org.name
+      - applicant.tel
+      - applicant.inn
+      - applicant.ogrn
+  -
+    code: owner
+    title: "Правообладатель"
+    order: 20
+    fields: 
+      - owner.type
+      - owner.fio
+      - owner.org.name
+      - owner.address.fias
+      - owner.address.fact
+      - owner.inn
+      - owner.ogrn
+  -
+    code: land_plot
+    title: "Участок"
+    order: 30
+    fields:
+      - municipality
+      - zu.kn
+      - zu.right
+  -
+    code: project
+    order: 40
+    title: "Проект"
+  -
+    code: docs
+    order: 50
+    title: "Документы"
+    fields:
+      - docs.egrn
+      - docs.kp
+      - docs.tup
+      - docs.oot
+      - docs.egrul
+      - docs.egrip
+      - docs.kp
+  -
+    code: result
+    order: 60
+    title: "Регистрация"
+    fields:
+      - result.delivery
+      - result.email
+      - result.comments

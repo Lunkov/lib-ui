@@ -1,0 +1,83 @@
+--- 
+code: request_test
+title: "Заявление на выдачу"
+description: "Выдержка из административного регламента:"
+version: 1
+date: 2019/10/1
+date_finish: 2300/1/15
+date_start: 2019/10/1
+table: request
+buttons: 
+  - 
+    code: submit
+    title: Сохранить
+  - 
+    code: close
+    title: Закрыть
+properties: 
+  -
+    code: municipality
+    table: municipality
+    title: Муниципалитет
+    type: string
+    widget: select-mdm
+    required: true
+    order: 10
+  -
+    code: docs.egrip
+    title: Выписка из ЕГРИП
+    type: string
+    widget: file
+    order: 20
+  -
+    code: docs.kp
+    title: Кадастровый паспорт
+    type: string
+    widget: file
+    order: 30
+tabs: 
+  -
+    code: applicant
+    order: 10
+    title: "Заявитель"
+    fields: 
+      - applicant.type
+      - applicant.tel
+      - applicant.inn
+      - applicant.ogrn
+  -
+    code: owner
+    order: 20
+    title: "Правообладатель"
+    fields: 
+      - owner.type
+      - owner.inn
+      - owner.ogrn
+  -
+    code: land_plot
+    order: 30
+    title: "Участок"
+    fields:
+      - municipality
+      - zu.kn
+      - zu.right
+  -
+    code: project
+    order: 40
+    title: "Проект"
+  -
+    code: docs
+    order: 50
+    title: "Документы"
+    fields:
+      - docs.egrn
+      - docs.egrip
+      - docs.kp
+  -
+    code: result
+    order: 60
+    title: "Регистрация"
+    fields:
+      - result.delivery
+      - result.email
+      - result.comments

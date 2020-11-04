@@ -1,0 +1,16 @@
+<div class="form-group">
+    <label for="{{ .CODE }}">{{ .TITLE }}</label>
+    <textarea id="{{ .CODE }}" name="{{ .CODE }}"></textarea>
+<script>
+$("#{{ .CODE }}").sceditor({
+	  plugins: "xhtml",
+	  toolbar: "bold,italic,underline,strike,subscript,superscript|left,center,right,justify|size,color,removeformat|cut,copy,pastetext|bulletlist,orderedlist,indent,outdent|table|code,quote|horizontalrule,image,email,link,unlink|youtube,time|ltr,rtl|print,maximize,source",
+	  charset: "utf-8",
+	  style: '/static/css/sceditor/themes/default.min.css',
+	  emoticonsEnabled: false,
+	  resizeEnabled: false,
+	  height:600,
+	  spellcheck: true,
+	});
+</script>
+</div>

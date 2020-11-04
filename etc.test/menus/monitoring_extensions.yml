@@ -1,0 +1,17 @@
+--- 
+code: monitoring.extensions
+title: "Дополнительно"
+order: 1000
+icon: list-outline
+version: 1
+children: 
+  -
+    code: monitoring.orgs
+    order: 100
+    title: Организации
+    link: /pages/tables/orgs-table
+  -
+    code: monitoring.orgs2
+    order: 200
+    title: Организации 2
+    link: /pages/table/orgs

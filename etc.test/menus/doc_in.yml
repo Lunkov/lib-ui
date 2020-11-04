@@ -1,0 +1,17 @@
+--- 
+code: documents
+order: 110
+title: "Документы"
+icon: book-open-outline
+version: 1
+children: 
+  -
+    code: docs.input
+    order: 100
+    title: Входящие
+    link: /pages/tables/table-docs-input
+  -
+    code: docs.output
+    order: 200
+    title: Исходящие
+    link: /pages/tables/table-docs-output

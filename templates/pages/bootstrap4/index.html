@@ -1,0 +1,51 @@
+{{ template "header" . }}
+  <body>
+	{{ MODAL "welcome.1" . }}
+    <nav class="navbar navbar-dark bg-dark">
+      <span class="navbar-brand mb-0 h1">{{ .Title }}</span>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/">{{ TR "Сервисы" }}</a>
+        </li>
+      </ul>
+      <li class="nav-item dropdown">
+			  <a class="nav-link dropdown-toggle row" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<div class="column">{{ .User_DisplayName }}</div><div class="column"><img src="{{ .User.Avatar }}" class="avatar"></div>
+			  </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/profile">{{ TR "Мой профиль" }}</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/logout">{{ TR "Выход" }}</a>
+        </div>
+       </li>
+    </nav>
+<br>
+<div class="container">
+
+Language: {{.LANG}}
+[[ .User_DisplayName ]]
+
+<ul id="hexGrid">
+{{ range .Services }}
+      <li class="hex">
+        <div class="hexIn">
+          <a class="hexLink" href="{{.Url}}/?k={{.User_JWT}}" target="_blank">
+            <img src="{{.Img}}" alt="">
+            <h1>{{.Name}}</h1>
+            <p>{{.Desc}}</p>
+          </a>
+        </div>
+      </li>
+{{ end }}
+</ul>
+
+{{ VIEW "table_edit_news" . }}
+
+{{ template "footer" . }}
+
+</div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  </body>
+</html>

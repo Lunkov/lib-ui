@@ -1,0 +1,22 @@
+--- 
+code: monitoring.objects
+order: 15
+title: "Объекты контроля"
+icon: cast-outline
+version: 1
+children: 
+  -
+    code: monitoring.objects.buildings
+    order: 100
+    title: Дома
+    link: /pages/tables/houses-table
+  -
+    code: monitoring.objects.devices
+    order: 200
+    title: Инженерное оборудование
+    link: /pages/tables/devices-table
+  -
+    code: monitoring.data.lk
+    order: 300
+    title: Отчеты
+    link: /pages/tables/report-table

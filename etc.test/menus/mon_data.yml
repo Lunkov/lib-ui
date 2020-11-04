@@ -1,0 +1,22 @@
+--- 
+code: monitoring.data
+order: 20
+title: "Данные"
+icon: activity-outline
+version: 1
+children: 
+  -
+    code: monitoring.data.mon_layers
+    order: 100
+    title: По объектам контроля
+    link: /pages/metering/common-view
+  -
+    code: monitoring.data.last_data
+    order: 200
+    title: Последние значения
+    link: /pages/metering/value-view
+  -
+    code: monitoring.data.lk
+    order: 300
+    title: Личные Кабинеты
+    link: /pages/lk/list

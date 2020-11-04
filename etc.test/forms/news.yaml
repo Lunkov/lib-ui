@@ -1,0 +1,54 @@
+--- 
+code: news
+title: "Редактирование новости"
+description: "Редактирование новости"
+method: POST
+action: /api/news_public
+version: 1
+function: news
+properties: 
+  -
+    code: id
+    title: ID
+    order: 1
+    type: string
+    widget: hidden
+  -
+    code: title
+    title: Заголовок
+    order: 10
+    type: string
+    widget: text
+    required: true
+  -
+    code: public_date
+    title: Дата публикации
+    order: 15
+    type: string
+    widget: date
+    required: true
+  -
+    code: description
+    title: Описание
+    order: 20
+    type: string
+    widget: editor
+    required: true
+  -
+    code: images
+    title: Файлы
+    order: 30
+    type: string
+    widget: files
+    required: false
+buttons: 
+  - 
+    code: submit
+    order: 10
+    title: Сохранить
+    type: submit
+  - 
+    code: close
+    order: 20
+    title: Закрыть
+    type: close

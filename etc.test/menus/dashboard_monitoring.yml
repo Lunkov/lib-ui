@@ -1,0 +1,17 @@
+--- 
+code: monitoring.main
+order: 1
+title: "Главная"
+icon: home-outline
+version: 1
+children: 
+  -
+    code: monitoring.stat
+    order: 100
+    title: Статистика
+    link: /pages/dashboard
+  -
+    code: monitoring.map
+    order: 10
+    title: Карта
+    link: /maps/map

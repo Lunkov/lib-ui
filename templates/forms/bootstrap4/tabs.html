@@ -1,0 +1,11 @@
+<ul class="nav nav-tabs" id="TAB-{{ .FORM_ID }}" role="tablist">
+{{ .TABS_TITLE }}
+</ui>
+<div class="tab-content" id="TAB-{{ .FORM_ID }}-CONTENT">>
+{{ .TABS_CONTENT }}
+</div>
+<script>
+  $(function () {
+    $('#TAB-{{ .FORM_ID }} li:last-child a').tab('show')
+  })
+</script>
