@@ -156,6 +156,9 @@ func getPrivateTemplate(name string, contents string, style string, lang string)
   t, err = t.Delims("[[", "]]").Parse(contents)
   if err != nil {
     glog.Errorf("ERR: Parse Private Template(%s): %v", name, err)
+    if glog.V(9) {
+      glog.Infof("DBG: ERROR: Parse Template(%s) html=%s", name, contents)
+    }
     return nil
   }
   memTemplate[index] = t
