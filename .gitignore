@@ -1,3 +1,5 @@
+etc.test/tr/ru_RU/!tr_new.yaml
+etc.test/tr/ar_EG/!tr_new.yaml
 lib-ui.test.*
 lib-ui.git.test.*
 web-service

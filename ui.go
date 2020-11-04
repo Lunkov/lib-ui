@@ -157,7 +157,9 @@ func GetStat() UIStat {
 
 func RenderForm(lang string, form_code string, style string, isModal bool, data *map[string]interface{}) string {
   index := indexForm(lang, form_code, style, isModal, data)
+  uimu.RLock()
   rForm, ok := mapRenders[index]
+  uimu.RUnlock()
   if ok {
     return rForm
   }
@@ -171,7 +173,9 @@ func RenderForm(lang string, form_code string, style string, isModal bool, data 
 
 func RenderPage(lang string, page_code string, style string, private bool, data *map[string]interface{}) string {
   index := indexPage(lang, page_code, style, private)
+  uimu.RLock()
   rPage, ok := mapRenders[index]
+  uimu.RUnlock()
   if ok {
     return rPage
   }
