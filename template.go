@@ -90,6 +90,9 @@ func appendBaseTemplate(t *template.Template, name string, path string, style st
         t_base, err = t_base.Parse(string(contents))
         if err != nil {
           glog.Errorf("ERR: Parse Template(%s:%s): %v", filebase, filename, err)
+          if glog.V(9) {
+            glog.Infof("DBG: ERROR: Parse Template(%s) html=%s", filename, string(contents))
+          }
           return err
         }
         makeTrMap(t_base, lang)
@@ -129,6 +132,9 @@ func getTemplate(name string, path string, style string, lang string) *template.
   t, err = t.Parse(string(contents))
   if err != nil {
     glog.Errorf("ERR: Parse Template(%s): %v", filename, err)
+    if glog.V(9) {
+      glog.Infof("DBG: ERROR: Parse Template(%s) html=%s", filename, string(contents))
+    }
     return nil
   }
   t = appendBaseTemplate(t, name, path, style, lang)

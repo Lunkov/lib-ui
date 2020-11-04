@@ -183,8 +183,8 @@ func RenderPage(lang string, page_code string, style string, private bool, data 
   if ok {
     uimu.Lock()
     mapRenders[index] = makeMimiHTML(render)
-    tr.SaveNew(configTrPath)
     uimu.Unlock()
+    defer tr.SaveNew(configTrPath)
     return mapRenders[index]
   }
   return "!! ERROR: RENDER PAGE(" + page_code + ") !!"
