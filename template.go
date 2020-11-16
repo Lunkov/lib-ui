@@ -17,7 +17,7 @@ import (
 
 var memTemplate = make(map[string]*template.Template)
 var fmap_custom = make(template.FuncMap)
-          
+
 func AppendFuncMap(funcmap template.FuncMap) {
   fmap_custom = funcmap
 }
@@ -68,7 +68,7 @@ func fileNameWithoutExtension(fileName string) string {
 }
 
 func appendBaseTemplate(t *template.Template, name string, path string, style string, lang string) *template.Template {
-  scanPath := fmt.Sprintf("./templates/%s/%s/base/", path, style)
+  scanPath := fmt.Sprintf("./templates/%s/%s/base/", style, path)
   count := 0
   errScan := filepath.Walk(scanPath, func(filename string, f os.FileInfo, err error) error {
     if f != nil && f.IsDir() == false {
@@ -121,7 +121,7 @@ func getTemplate(name string, path string, style string, lang string) *template.
   }
   var err error
 
-  filename := fmt.Sprintf("./templates/%s/%s/%s.html", path, style, name)
+  filename := fmt.Sprintf("./templates/%s/%s/%s.html", style, path, name)
  
   contents, err := ioutil.ReadFile(filename)
   if err != nil {

@@ -1,4 +1,4 @@
-module github.com/Lunkov/lib-ui.git
+module github.com/Lunkov/lib-ui
 
 go 1.13
 
