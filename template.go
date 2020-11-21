@@ -281,7 +281,7 @@ Node:
 // Only works for top level, plain variables. Returns all problematic parse.Node as errors.
 func findTrTemplate(t *template.Template) []string {
   var res []string
-  if t == nil {
+  if t == nil || t.Tree == nil  || t.Tree.Root == nil {
     return res
   }
   var ln *parse.ListNode
