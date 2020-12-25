@@ -133,20 +133,20 @@ func (info *FormInfo) TrDef() {
 }
 
 func (info *FormInfo) Tr(lang string) {
-  info.Title = tr.Tr(lang, info.Title)
-  info.Description = tr.Tr(lang, info.Description)
+  info.Title, _ = tr.Tr(lang, info.Title)
+  info.Description, _ = tr.Tr(lang, info.Description)
   for i, tab := range info.Tabs {
-    tab.Title = tr.Tr(lang, tab.Title)
-    tab.Description = tr.Tr(lang, tab.Description)
+    tab.Title, _ = tr.Tr(lang, tab.Title)
+    tab.Description, _ = tr.Tr(lang, tab.Description)
     info.Tabs[i] = tab
   }
   for i, prop := range info.Properties {
-    prop.Title = tr.Tr(lang, prop.Title)
-    prop.Description = tr.Tr(lang, prop.Description)
+    prop.Title, _ = tr.Tr(lang, prop.Title)
+    prop.Description, _ = tr.Tr(lang, prop.Description)
     info.Properties[i] = prop
   }
   for i, button := range info.Buttons {
-    button.Title = tr.Tr(lang, button.Title)
+    button.Title, _ = tr.Tr(lang, button.Title)
     info.Buttons[i] = button
   }
 }

@@ -50,9 +50,9 @@ func (info *PageInfo) TrDef() {
 }
 
 func (info *PageInfo) Tr(lang string) {
-  info.Title = tr.Tr(lang, info.Title)
-  info.Description = tr.Tr(lang, info.Description)
-  info.Keywords = tr.Tr(lang, info.Keywords)
+  info.Title, _ = tr.Tr(lang, info.Title)
+  info.Description, _ = tr.Tr(lang, info.Description)
+  info.Keywords, _ = tr.Tr(lang, info.Keywords)
 }
 
 func (info *PageInfo) Copy(in *PageInfo) {

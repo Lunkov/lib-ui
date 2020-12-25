@@ -98,13 +98,13 @@ func (info *ViewInfo) TrDef() {
 }
 
 func (info *ViewInfo) Tr(lang string) {
-  info.Title = tr.Tr(lang, info.Title)
-  info.Description = tr.Tr(lang, info.Description)
+  info.Title, _ = tr.Tr(lang, info.Title)
+  info.Description, _ = tr.Tr(lang, info.Description)
   for _, column := range info.Table.Columns {
-    column.Title = tr.Tr(lang, column.Title)
+    column.Title, _ = tr.Tr(lang, column.Title)
   }
   for _, action := range info.Actions {
-    action.Title = tr.Tr(lang, action.Title)
+    action.Title, _ = tr.Tr(lang, action.Title)
   }
 }
 

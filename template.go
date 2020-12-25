@@ -25,7 +25,8 @@ func AppendFuncMap(funcmap template.FuncMap) {
 func funcMap(name string, path string, style string, lang string) template.FuncMap {
   fmap := template.FuncMap{
                   "TR": func(str string) string {
-                      return tr.Tr(lang, str)
+                      t, _ := tr.Tr(lang, str)
+                      return t
                   },
                   "TR_LANG": func() string {
                       return lang
@@ -230,7 +231,7 @@ func makeTrMap(t *template.Template, lang string) map[string]string {
   trs := findTrTemplate(t)
   for _, v := range trs {
     tr.SetDef(v)
-    resTr[v] = tr.Tr(lang, v)
+    resTr[v], _ = tr.Tr(lang, v)
   }
   return resTr
 }

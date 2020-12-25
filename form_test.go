@@ -48,10 +48,9 @@ func TestCheckForm(t *testing.T) {
   assert.Equal(t, 4, tr.Count())
   
   tr_str_need := "Password"
-  tr_str := tr.Tr("en_US", "Пароль")
+  tr_str, _ := tr.Tr("en_US", "Пароль")
   assert.Equal(t, tr_str_need, tr_str)
-  tr_str_need = "--TEXT NOT FOUND--"
-  tr_str = tr.Tr("en", "Password")
+  tr_str, _ = tr.Tr("en", "Password")
   assert.Equal(t, tr_str_need, tr_str)
 
   assert.Equal(t, 0, formCount())
