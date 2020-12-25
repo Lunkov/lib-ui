@@ -77,7 +77,7 @@ func Init(configPath string, enableWatcher bool, enableMinify bool) {
         case event := <-watcherFiles.Event:	
           glog.Infof("DBG: Watcher Event: %v", event)
           // Ignore New Translate Files
-          if event.Name() != "!tr_new.yaml" {
+          if filepath.Ext(event.Name()) != ".!yaml" {
             loadAll(configPath)
           }
         case err := <-watcherFiles.Error:

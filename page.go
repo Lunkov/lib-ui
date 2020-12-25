@@ -14,8 +14,8 @@ import (
 type PageInfo struct {
   CODE           string                 `json:"code"              yaml:"code"`
   Title          string                 `json:"title"             yaml:"title"`
-  Keywords       string                 `json:"keywords"          yaml:"keywords"`
-  Description    string                 `json:"description"       yaml:"description"`
+  Keywords       string                 `json:"keywords"          yaml:"keywords"`             // MAX 250
+  Description    string                 `json:"description"       yaml:"description"`          // MAX 140
   Template       string                 `json:"template"          yaml:"template"`
   Cache          bool                   `json:"cache"             yaml:"cache"`
   MultiLanguage  bool                   `json:"multi_language"    yaml:"multi_language"`
