@@ -14,6 +14,7 @@ import (
 type PageInfo struct {
   CODE           string                 `json:"code"              yaml:"code"`
   Title          string                 `json:"title"             yaml:"title"`
+  Keywords       string                 `json:"keywords"          yaml:"keywords"`
   Description    string                 `json:"description"       yaml:"description"`
   Template       string                 `json:"template"          yaml:"template"`
   Cache          bool                   `json:"cache"             yaml:"cache"`
@@ -51,6 +52,7 @@ func (info *PageInfo) TrDef() {
 func (info *PageInfo) Tr(lang string) {
   info.Title = tr.Tr(lang, info.Title)
   info.Description = tr.Tr(lang, info.Description)
+  info.Keywords = tr.Tr(lang, info.Keywords)
 }
 
 func (info *PageInfo) Copy(in *PageInfo) {
@@ -128,6 +130,7 @@ func renderPage(lang string, page_code string, style string, private bool, data 
       "CODE": page.CODE,
       "TITLE": page.Title,
       "DESCRIPTION": page.Description,
+      "KEYWORDS": page.Keywords,
       "LANG": lang,
     }
   unionMap(&propPage, data)
