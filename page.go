@@ -50,9 +50,9 @@ func (info *PageInfo) TrDef() {
 }
 
 func (info *PageInfo) Tr(lang string) {
-  info.Title, _ = tr.Tr(lang, info.Title)
+  info.Title, _       = tr.Tr(lang, info.Title)
   info.Description, _ = tr.Tr(lang, info.Description)
-  info.Keywords, _ = tr.Tr(lang, info.Keywords)
+  info.Keywords, _    = tr.Tr(lang, info.Keywords)
 }
 
 func (info *PageInfo) Copy(in *PageInfo) {
@@ -148,6 +148,7 @@ func renderPage(lang string, page_code string, style string, private bool, data 
       glog.Errorf("ERR: LOAD: templatePrivate(%s)", page_code)
       return "", false
     }
+    tpl.Reset()
     err := tmplPage.Execute(&tpl, propPage)
     if err != nil {
       glog.Errorf("ERR: templateFile(%s).Execute: '%v'", page_code, err)

@@ -1,0 +1,19 @@
+  <body>
+{{.Title}}
+
+Language: {{.LANG}}
+[[ .User_DisplayName ]]
+
+<ul id="hexGrid">
+{{ range .Services }}
+      <li class="hex">
+        <div class="hexIn">
+          <a class="hexLink" href="{{.Url}}/?k={{.User_JWT}}" target="_blank">
+            <img src="{{.Img}}" alt="">
+            <h1>{{.Name}}</h1>
+            <p>{{.Desc}}</p>
+          </a>
+        </div>
+      </li>
+{{ end }}
+</ul>

@@ -145,7 +145,7 @@ func getTemplate(name string, path string, style string, lang string) *template.
 }
 
 func getPrivateTemplate(name string, contents string, style string, lang string) *template.Template {
-  index := fmt.Sprintf("TEMPLATE#%s#%s#%s#p", style, name, lang)
+  index := fmt.Sprintf("PRIVTEMPLATE#%s#%s#%s#p", style, name, lang)
   
   i, ok := memTemplate[index]
   if ok {

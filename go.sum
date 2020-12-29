@@ -2,6 +2,8 @@ github.com/Lunkov/lib-env v0.0.0-20201103163857-e525d33d67ef h1:+S87IIfuH+CMipgP
 github.com/Lunkov/lib-env v0.0.0-20201103163857-e525d33d67ef/go.mod h1:06/av9iFrZrtRNN/kGn3iVSXiiJLZS0D4j1BZyk/XdY=
 github.com/Lunkov/lib-tr v0.0.0-20201104080203-1150e7b0cb84 h1:tteTr7Dz5fW737BPk9ehxTaupwx5rmCNmyLxf54/Lfc=
 github.com/Lunkov/lib-tr v0.0.0-20201104080203-1150e7b0cb84/go.mod h1:z08Oq1v3toxePGj/IObDxos7qDk8xb/BVb3UEqSYY00=
+github.com/Lunkov/lib-tr v0.0.0-20201225174731-d0926ae4c0e6 h1:p+InI/WotB7EzPB04aRo/4Pl2nabvm7K3JLmMQtSlxk=
+github.com/Lunkov/lib-tr v0.0.0-20201225174731-d0926ae4c0e6/go.mod h1:z08Oq1v3toxePGj/IObDxos7qDk8xb/BVb3UEqSYY00=
 github.com/PuerkitoBio/goquery v1.5.1/go.mod h1:GsLWisAFVj4WgDibEWF4pvYnkVQBpKBKeU+7zCJoLcc=
 github.com/andybalholm/cascadia v1.1.0/go.mod h1:GsXiBklL0woXo1j/WYWtSYYC4ouU9PqHO0sqidkEA4Y=
 github.com/cheekybits/is v0.0.0-20150225183255-68e9c0620927/go.mod h1:h/aW8ynjgkuj+NQRlZcDbAbM1ORAbXjXX77sX7T289U=
@@ -55,5 +57,7 @@ golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v2 v2.3.0 h1:clyUAQHOM3G0M3f5vQj7LuJrETvjVot3Z5el9nffUtU=
 gopkg.in/yaml.v2 v2.3.0/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
+gopkg.in/yaml.v2 v2.4.0 h1:D8xgwECY7CYvx+Y2n4sBz93Jn9JRvxdiyyo8CTfuKaY=
+gopkg.in/yaml.v2 v2.4.0/go.mod h1:RDklbk79AGWmwhnvt/jBztapEOGDOx6ZbXqjP6csGnQ=
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c h1:dUUwHk2QECo/6vqA44rthZ8ie2QXMNeKRTHCNY2nXvo=
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
