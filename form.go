@@ -195,20 +195,20 @@ func FormGetParameters(r *http.Request, storagePath string) (map[string]interfac
     if err == io.EOF {
       break
     }
-    if glog.V(9) {
-      glog.Infof("DBG: UploadFile URL '%s': `%v`", r.URL.Path, part.FileName())
-    }
 
-    //if part.FileName() is empty, skip this iteration.
     if part.FileName() == "" {
-      glog.Infof("DBG: UploadFile URL '%s': `%v`", r.URL.Path, part.FormName())
       name := part.FormName()
       value := readValueFromFormData(part)
       params[name] = value
       continue
     }
+
+    if glog.V(9) {
+      glog.Infof("DBG: UploadFile URL '%s': `%v`", r.URL.Path, part.FileName())
+    }
     
-    dst, err := os.Create(storagePath + part.FileName())
+    filename := storagePath + part.FileName()
+    dst, err := os.Create(filename)
     defer dst.Close()
 
     if err != nil {
@@ -220,6 +220,9 @@ func FormGetParameters(r *http.Request, storagePath string) (map[string]interfac
       glog.Errorf("ERR: Write UploadFile URL '%s': `%v` %s", r.URL.Path, part.FileName(), err.Error())
       return params, false
     }
+    
+    params[part.FormName()] = filename
+
   }
   return params, true
 }
