@@ -197,10 +197,10 @@ func FormGetParameters(r *http.Request, storagePath string) (map[string]interfac
     }
 
     if part.FileName() == "" {
-      name := part.FormName()
-      value := readValueFromFormData(part)
-      params[name] = value
-      glog.Infof("DBG: Set parameter '%s': `%v`", name, value)
+      params[part.FormName()] = readValueFromFormData(part)
+      if glog.V(9) {
+        glog.Infof("DBG: Set parameter '%s': `%v`", part.FormName(), readValueFromFormData(part))
+      }
       continue
     }
 
@@ -223,7 +223,9 @@ func FormGetParameters(r *http.Request, storagePath string) (map[string]interfac
     }
     
     params[part.FormName()] = filename
-    glog.Infof("DBG: Set parameter '%s': `%v`", name, filename)
+    if glog.V(9) {
+      glog.Infof("DBG: Set parameter '%s': `%v`", part.FormName(), filename)
+    }
 
   }
   return params, true
