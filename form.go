@@ -2,6 +2,7 @@ package ui
 
 import (
   "bytes"
+  "strings"
   "strconv"
   "sort"
   "encoding/json"
@@ -222,13 +223,37 @@ func FormGetParameters(r *http.Request, storagePath string) (map[string]interfac
       return params, false
     }
     
-    params[part.FormName()] = filename
+    appendFiles(&params, part.FormName(), filename)
+
     if glog.V(9) {
       glog.Infof("DBG: Set parameter '%s': `%v`", part.FormName(), filename)
     }
 
   }
   return params, true
+}
+
+func appendFiles(params *map[string]interface{}, key string, filename string) {
+  i := strings.Index(key, ":")
+  if i < 0 {
+    (*params)[key] = filename
+  } else {
+    name := key[0:i]
+    index := key[i+1:]
+    in, err := strconv.Atoi(index)
+    if err == nil {
+      if in == 0 {
+        (*params)[name] = filename
+      } else {
+        if in == 1 {
+          // is array. Revert to "name:0"
+          (*params)[name + ":0"] = (*params)[name]
+          (*params)[key] = filename
+          delete((*params), name)
+        }
+      }
+    }
+  }
 }
 
 func readValueFromFormData(part *multipart.Part) string {

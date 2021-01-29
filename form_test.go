@@ -113,3 +113,23 @@ func TestCheckFormTabs(t *testing.T) {
   render1 := renderForm("ru_RU", "organization.1", "bootstrap4", true, &data)
   assert.Equal(t, render1_need, render1)
 }
+
+func TestCheckFileParams(t *testing.T) {
+ 
+  params := make(map[string]interface{})
+  
+  appendFiles(&params, "image:0", "image1.png")
+  
+  data_need := map[string]interface{}{"image":"image1.png"}
+  
+  assert.Equal(t, data_need, params)
+  
+  appendFiles(&params, "images:0", "image1.png")
+  appendFiles(&params, "images:1", "image2.png")
+  appendFiles(&params, "images:3", "image2.png")
+  
+  data_need = map[string]interface{}{"image":"image1.png", "images:0":"image1.png", "images:1":"image2.png"}
+  
+  assert.Equal(t, data_need, params)
+  
+}
