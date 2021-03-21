@@ -1,5 +1,9 @@
 github.com/Lunkov/lib-env v0.0.0-20201103163857-e525d33d67ef h1:+S87IIfuH+CMipgPCcYlHhQ03GRdW8FIB7BHIempWnA=
 github.com/Lunkov/lib-env v0.0.0-20201103163857-e525d33d67ef/go.mod h1:06/av9iFrZrtRNN/kGn3iVSXiiJLZS0D4j1BZyk/XdY=
+github.com/Lunkov/lib-env v0.0.0-20210314124046-885d8975482c h1:B6CYcWeFR8N2IszoWkzY9MF1kukrgP1093TNKYR8nDA=
+github.com/Lunkov/lib-env v0.0.0-20210314124046-885d8975482c/go.mod h1:06/av9iFrZrtRNN/kGn3iVSXiiJLZS0D4j1BZyk/XdY=
+github.com/Lunkov/lib-ref v0.0.0-20210313125313-ca5c3ccdd9be h1:yE285Qpk61dsDIuHYgI5jaTbDajyoTpv77Vw0b4iTx8=
+github.com/Lunkov/lib-ref v0.0.0-20210313125313-ca5c3ccdd9be/go.mod h1:7V8DI9VT9GRv9V2zKqYn2uzAss6qmFkCb7jK/heBK3U=
 github.com/Lunkov/lib-tr v0.0.0-20201104080203-1150e7b0cb84 h1:tteTr7Dz5fW737BPk9ehxTaupwx5rmCNmyLxf54/Lfc=
 github.com/Lunkov/lib-tr v0.0.0-20201104080203-1150e7b0cb84/go.mod h1:z08Oq1v3toxePGj/IObDxos7qDk8xb/BVb3UEqSYY00=
 github.com/Lunkov/lib-tr v0.0.0-20201225174731-d0926ae4c0e6 h1:p+InI/WotB7EzPB04aRo/4Pl2nabvm7K3JLmMQtSlxk=
@@ -19,8 +23,12 @@ github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b h1:VKtxabqXZkF25pY9ekf
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/google/uuid v1.1.2 h1:EVhdT+1Kseyi1/pUmXKaFxYsDNy9RQYkMWRH68J/W7Y=
 github.com/google/uuid v1.1.2/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/google/uuid v1.2.0 h1:qJYtXnJRWmpe7m/3XlyhrsLrEURqHRM2kxzoxXqyUDs=
+github.com/google/uuid v1.2.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/jinzhu/gorm v1.9.15 h1:OdR1qFvtXktlxk73XFYMiYn9ywzTwytqe4QkuMRqc38=
 github.com/jinzhu/gorm v1.9.15/go.mod h1:G3LB3wezTOWM2ITLzPxEXgSkOXAntiLHS7UdBefADcs=
+github.com/jinzhu/gorm v1.9.16 h1:+IyIjPEABKRpsu/F8OvDPy9fyQlgsg2luMV2ZIH5i5o=
+github.com/jinzhu/gorm v1.9.16/go.mod h1:G3LB3wezTOWM2ITLzPxEXgSkOXAntiLHS7UdBefADcs=
 github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD/E=
 github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/jinzhu/now v1.0.1/go.mod h1:d3SSVoowX0Lcu0IBviAWJpolVfI5UJVZZ7cO71lE/z8=
@@ -35,6 +43,8 @@ github.com/spf13/pflag v1.0.5/go.mod h1:McXfInJRrz4CZXVZOBLb0bTZqETkiAhM9Iw0y3An
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.6.1 h1:hDPOHmpOpP40lSULcqw7IrRb/u7w6RpDC9399XyoNd0=
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
+github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5CcY=
+github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/tdewolff/minify v2.3.6+incompatible h1:2hw5/9ZvxhWLvBUnHE06gElGYz+Jv9R4Eys0XUzItYo=
 github.com/tdewolff/minify/v2 v2.9.10 h1:p+ifTTl+JMFFLDYNAm7nxQ9XuCG10HTW00wlPAZ7aoE=
 github.com/tdewolff/minify/v2 v2.9.10/go.mod h1:U1Nc+/YBSB0FPEarqcgkYH3Ep4DNyyIbOyl5P4eWMuo=

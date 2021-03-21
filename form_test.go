@@ -10,32 +10,6 @@ import (
   "github.com/Lunkov/lib-tr"
 )
 
-func TestCheckValue2String(t *testing.T) {
-  
-  res, ok := value2String("112")
-  assert.Equal(t, true, ok)
-  assert.Equal(t, "112", res)
-  
-  res, ok = value2String(112)
-  assert.Equal(t, true, ok)
-  assert.Equal(t, "112", res)
-
-  res, ok = value2String(-112)
-  assert.Equal(t, true, ok)
-  assert.Equal(t, "-112", res)
-
-  res, ok = value2String(-112.4568)
-  assert.Equal(t, true, ok)
-  assert.Equal(t, "-112.4568", res)
-
-
-  // WARNING
-  res, ok = value2String(-3453455645645672.45345646474568)
-  assert.Equal(t, true, ok)
-  assert.Equal(t, "-3.4534556456456725e+15", res)
-
-}
-
 func TestCheckForm(t *testing.T) {
 	flag.Set("alsologtostderr", "true")
 	flag.Set("log_dir", ".")

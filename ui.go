@@ -32,7 +32,7 @@ type UIStat struct {
   CntLang    int     `json:"cnt_lang"`
 }
 
-var watcherFiles watcher.Watcher
+var watcherFiles *watcher.Watcher
 var uimu sync.RWMutex
 var mapJSONs = make(map[string][]byte) // is string
 var mapRenders = make(map[string]string)
@@ -69,14 +69,16 @@ func Init(configPath string, enableWatcher bool, enableMinify bool) {
   loadAll(configPath)
   
   if enableWatcher {
-    watcherFiles := watcher.New()
+    watcherFiles = watcher.New()
     watcherFiles.SetMaxEvents(1)
     watcherFiles.FilterOps(watcher.Rename, watcher.Move, watcher.Remove, watcher.Create, watcher.Write)
     go func() {
       for {
         select {
         case event := <-watcherFiles.Event:	
-          glog.Infof("DBG: Watcher Event: %v", event)
+          if glog.V(9) {
+            glog.Infof("DBG: Watcher Event: %v", event)
+          }
           // Ignore New Translate Files
           if filepath.Ext(event.Name()) != ".!yaml" {
             loadAll(configPath)

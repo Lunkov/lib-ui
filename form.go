@@ -19,6 +19,7 @@ import (
   
   "github.com/Lunkov/lib-env"
   "github.com/Lunkov/lib-tr"
+  "github.com/Lunkov/lib-ref"
 )
 
 // Form methods: POST or GET.
@@ -172,10 +173,10 @@ func formFilter(lang string, forms []string) map[string]FormInfo {
 func formInit(configPath string) {
   mapForms = make(map[string]FormInfo)
   memTemplate = make(map[string]*template.Template)
-  env.LoadFromYMLFiles(configPath, loadFormYAML)
+  env.LoadFromFiles(configPath, "", loadFormYAML)
 }
 
-func FormGetParameters(r *http.Request, storagePath string) (map[string]interface{}, bool) {
+func FormGetParameters(r *http.Request, storagePath string, subPath string) (map[string]interface{}, bool) {
   params := make(map[string]interface{})
   /* TODO
    * code_form string, 
@@ -368,7 +369,7 @@ func renderForm(lang string, form_code string, style string, isModal bool, data 
     if data != nil {
       v, ok := (*data)[prop.CODE]
       if ok {
-        str, okstr := value2String(v)
+        str, okstr := ref.ValueToString(v)
         if okstr {
           value = str
         }

@@ -2,9 +2,7 @@ package ui
 
 import (
   "fmt"
-  "strconv"
   "strings"
-  "reflect"
   "os"
   "path/filepath"
   "io/ioutil"
@@ -181,49 +179,6 @@ func unionMapStr(srcMap *map[string]interface{}, newMap *map[string]string) {
       (*srcMap)[k] = v
     }
   }
-}
-
-// Value(Interface) To String
-func value2String(info interface{}) (string, bool) {
-  res := ""
-	v := reflect.ValueOf(info)
-	if v.Kind() == reflect.Ptr {
-		v = v.Elem()
-	}
-  if !v.IsValid() ||
-     !v.CanInterface() {
-    return res, false
-  }
-  
-	switch v.Kind() {
-	case reflect.Bool:
-    if v.Bool() {
-      return "true", true
-    }
-		return "false", true
-	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		i := v.Int()
-    return strconv.FormatInt(i, 10), true
-	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
-		i := v.Uint()
-    return strconv.FormatUint(i, 10), true
-	case reflect.Float32, reflect.Float64:
-    f := v.Float()
-    return strconv.FormatFloat(f, 'g', -1, 64), true
-		//math.Float64bits(v.Float())
-	case reflect.Complex64, reflect.Complex128:
-		//c := v.Complex()
-		//return math.Float64bits(real(c)) == 0 && math.Float64bits(imag(c)) == 0
-	case reflect.String:
-    return v.String(), true
-	case reflect.Array:
-		return res, false
-  case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice, reflect.UnsafePointer:
-		return res, false
-	case reflect.Struct:
-		return res, false
-	}
-  return res, false
 }
 
 func makeTrMap(t *template.Template, lang string) map[string]string {

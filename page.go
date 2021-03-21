@@ -74,7 +74,7 @@ func pageFilter(lang string, pages []string) map[string]PageInfo {
 
 func pageInit(configPath string) {
   mapPages = make(map[string]PageInfo)
-  env.LoadFromYMLFiles(configPath, loadPageYAML)
+  env.LoadFromFiles(configPath, "", loadPageYAML)
 }
 
 func loadPageYAML(filename string, yamlFile []byte) int {

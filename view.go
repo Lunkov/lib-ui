@@ -121,7 +121,7 @@ func viewFilter(lang string, views []string) map[string]ViewInfo {
 }
 
 func viewInit(configPath string) {
-  env.LoadFromYMLFiles(configPath, loadViewYAML)
+  env.LoadFromFiles(configPath, "", loadViewYAML)
 }
 
 func loadViewYAML(filename string, yamlFile []byte) int {
