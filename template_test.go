@@ -5,15 +5,20 @@ import (
   "github.com/stretchr/testify/assert"
   
   "bytes"
+  
+  "github.com/Lunkov/lib-tr"
 )
 
 func TestCheckTemplate(t *testing.T) {
   
+  translate := tr.New()
+  templates := NewTemplates(translate, "./templates")
+  
   // Public templates
-  tmplProp := getTemplate("index111", "pages", "bootstrap4", "ru")
+  tmplProp := templates.Get("index111", "pages", "bootstrap4", "ru")
   assert.Nil(t, tmplProp)
 
-  tmplProp = getTemplate("index", "pages", "bootstrap4", "ru")
+  tmplProp = templates.Get("index", "pages", "bootstrap4", "ru")
   assert.NotNil(t, tmplProp)
 
   vars_need := []string{ "Title", "User_DisplayName", "LANG"}
@@ -29,7 +34,7 @@ func TestCheckTemplate(t *testing.T) {
   var tpl bytes.Buffer
   var ptpl bytes.Buffer
 
-  tmplPage := getTemplate("private", "pages", "bootstrap4", "ru")
+  tmplPage := templates.Get("private", "pages", "bootstrap4", "ru")
   assert.NotNil(t, tmplProp)
 
   vars_need = []string{ "Title", "LANG"}
@@ -46,7 +51,7 @@ func TestCheckTemplate(t *testing.T) {
     
   assert.Equal(t, "  <body>\nHello\n\nLanguage: ru\n[[ .User_DisplayName ]]\n\n<ul id=\"hexGrid\">\n\n</ul>\n", tpl.String())
   
-  tmplProp = getPrivateTemplate("private", tpl.String(), "bootstrap4", "ru")
+  tmplProp = templates.getPrivate("private", tpl.String(), "bootstrap4", "ru")
   assert.NotNil(t, tmplProp)
 
   vars_need = []string{ "User_DisplayName"}

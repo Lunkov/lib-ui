@@ -13,38 +13,32 @@ import (
   "github.com/Lunkov/lib-tr"
 )
 
-var memTemplate = make(map[string]*template.Template)
-var fmap_custom = make(template.FuncMap)
-
-func AppendFuncMap(funcmap template.FuncMap) {
-  fmap_custom = funcmap
+type Templates struct {
+  templPath    string
+  templates    map[string]*template.Template
+  translate   *tr.Tr
+  functions   *Functions
 }
 
-func funcMap(name string, path string, style string, lang string) template.FuncMap {
-  fmap := template.FuncMap{
-                  "TR": func(str string) string {
-                      t, _ := tr.Tr(lang, str)
-                      return t
-                  },
-                  "TR_LANG": func() string {
-                      return lang
-                  },
-                  "TR_LANG_NAME": func() string {
-                      return tr.LangName(lang)
-                  },
-                  "FORM": func(form_code string, data map[string]interface{}) template.HTML {
-                      return template.HTML(renderForm(lang, form_code, style, false, &data))
-                  },
-                  "MODAL": func(form_code string, data map[string]interface{}) template.HTML {
-                      return template.HTML(renderForm(lang, form_code, style, true, &data))
-                  },
-                  "VIEW": func(view_code string, data map[string]interface{}) template.HTML {
-                      res, ok := renderView(lang, view_code, style, &data)
-                      if ok {
-                        return template.HTML(res)
-                      }
-                      return template.HTML("--- VIEW '" + view_code + "' NOT FOUND ---")
-                  },
+func NewTemplates(t *tr.Tr, p string) *Templates {
+  return &Templates{
+        templPath: p,
+        templates: make(map[string]*template.Template),
+        translate: t,
+      }
+}
+
+func (t *Templates) SetFunc(f *Functions) {
+  t.functions = f
+}
+
+func (t *Templates) FuncMap(name string, path string, style string, lang string) template.FuncMap {
+  return t.functions.FuncMap(name, path, style, lang)
+}
+
+/*
+func stdFuncMap() template.FuncMap {
+  return template.FuncMap{
                   "attr":func(s string) template.HTMLAttr{
                       return template.HTMLAttr(s)
                   },
@@ -55,19 +49,21 @@ func funcMap(name string, path string, style string, lang string) template.FuncM
                       return template.URL(s)
                   },
                 }
-  for k, v := range fmap_custom {
-    fmap[k] = v
+}*/
+/*
+func (t *Templates) AppendFuncMap(funcmap *template.FuncMap) {
+  for k, v := range (*funcmap) {
+    t.functions[k] = v
   }
-  return fmap
-}
+}*/
 
 // Get Name of Template from file name
 func fileNameWithoutExtension(fileName string) string {
   return strings.TrimSuffix(filepath.Base(fileName), filepath.Ext(fileName))
 }
 
-func appendBaseTemplate(t *template.Template, name string, path string, style string, lang string) *template.Template {
-  scanPath := fmt.Sprintf("./templates/%s/%s/base/", style, path)
+func (ts *Templates) appendBaseTemplate(t *template.Template, name string, path string, style string, lang string) *template.Template {
+  scanPath := fmt.Sprintf("%s/%s/%s/base/", ts.templPath, style, path)
   count := 0
   errScan := filepath.Walk(scanPath, func(filename string, f os.FileInfo, err error) error {
     if f != nil && f.IsDir() == false {
@@ -78,14 +74,14 @@ func appendBaseTemplate(t *template.Template, name string, path string, style st
 
       index := fmt.Sprintf("TEMPLATE#BASE#%s#%s#%s", style, filebase, lang)
 
-      t_base, ok := memTemplate[index]
+      t_base, ok := ts.templates[index]
       if !ok {
         contents, err := ioutil.ReadFile(filename)
         if err != nil {
           glog.Errorf("ERR: Get Template(%s:%s): %v", filebase, filename, err)
           return err
         }
-        t_base = template.New(filebase).Funcs(funcMap(name, path, style, lang))
+        t_base = template.New(filebase).Funcs(ts.FuncMap(name, path, style, lang))
         t_base, err = t_base.Parse(string(contents))
         if err != nil {
           glog.Errorf("ERR: Parse Template(%s:%s): %v", filebase, filename, err)
@@ -94,15 +90,15 @@ func appendBaseTemplate(t *template.Template, name string, path string, style st
           }
           return err
         }
-        makeTrMap(t_base, lang)
+        ts.makeTrMap(t_base, lang)
       }
       count ++
       t.AddParseTree(t_base.Name(), t_base.Tree)
     }
     return nil
   })
-  if glog.V(2) {
-    glog.Infof("LOG: Scan Path: %s, Templates: %d\n", scanPath, count)
+  if glog.V(9) {
+    glog.Infof("DBG: Scan Path: %s, Templates: %d", scanPath, count)
   }
   if errScan != nil {
     glog.Errorf("ERR: %s\n", errScan)
@@ -111,23 +107,23 @@ func appendBaseTemplate(t *template.Template, name string, path string, style st
 }
 
 
-func getTemplate(name string, path string, style string, lang string) *template.Template {
+func (ts *Templates) Get(name string, path string, style string, lang string) *template.Template {
   index := fmt.Sprintf("TEMPLATE#%s#%s#%s", style, name, lang)
   
-  i, ok := memTemplate[index]
+  i, ok := ts.templates[index]
   if ok {
     return i
   }
   var err error
 
-  filename := fmt.Sprintf("./templates/%s/%s/%s.html", style, path, name)
+  filename := fmt.Sprintf("%s/%s/%s/%s.html", ts.templPath, style, path, name)
  
   contents, err := ioutil.ReadFile(filename)
   if err != nil {
     glog.Errorf("ERR: Get Template(%s): %v", filename, err)
     return nil
   }
-  t := template.New(filename).Funcs(funcMap(name, path, style, lang))
+  t := template.New(filename).Funcs(ts.FuncMap(name, path, style, lang))
   t, err = t.Parse(string(contents))
   if err != nil {
     glog.Errorf("ERR: Parse Template(%s): %v", filename, err)
@@ -136,23 +132,25 @@ func getTemplate(name string, path string, style string, lang string) *template.
     }
     return nil
   }
-  t = appendBaseTemplate(t, name, path, style, lang)
-  
-  memTemplate[index] = t
+  t = ts.appendBaseTemplate(t, name, path, style, lang)
+  if glog.V(9) {
+    glog.Infof("DBG: Load Template(%s) file=%s", index, filename)
+  }
+  ts.templates[index] = t
   return t
 }
 
-func getPrivateTemplate(name string, contents string, style string, lang string) *template.Template {
+func (t *Templates) getPrivate(name string, contents string, style string, lang string) *template.Template {
   index := fmt.Sprintf("PRIVTEMPLATE#%s#%s#%s#p", style, name, lang)
   
-  i, ok := memTemplate[index]
+  i, ok := t.templates[index]
   if ok {
     return i
   }
   var err error
 
-  t := template.New(index).Funcs(funcMap(name, "mem", style, lang))
-  t, err = t.Delims("[[", "]]").Parse(contents)
+  tmp := template.New(index).Funcs(t.FuncMap(name, "private", style, lang))
+  tmp, err = tmp.Delims("[[", "]]").Parse(contents)
   if err != nil {
     glog.Errorf("ERR: Parse Private Template(%s): %v", name, err)
     if glog.V(9) {
@@ -160,33 +158,16 @@ func getPrivateTemplate(name string, contents string, style string, lang string)
     }
     return nil
   }
-  memTemplate[index] = t
-  return t
+  t.templates[index] = tmp
+  return tmp
 }
 
-// UNION MAPS
-func unionMap(srcMap *map[string]interface{}, newMap *map[string]interface{}) {
-  if srcMap != nil && newMap != nil {
-    for k, v := range (*newMap) {
-      (*srcMap)[k] = v
-    }
-  }
-}
-
-func unionMapStr(srcMap *map[string]interface{}, newMap *map[string]string) {
-  if srcMap != nil && newMap != nil {
-    for k, v := range (*newMap) {
-      (*srcMap)[k] = v
-    }
-  }
-}
-
-func makeTrMap(t *template.Template, lang string) map[string]string {
+func (ts *Templates) makeTrMap(t *template.Template, lang string) map[string]string {
   resTr := make(map[string]string)
   trs := findTrTemplate(t)
   for _, v := range trs {
-    tr.SetDef(v)
-    resTr[v], _ = tr.Tr(lang, v)
+    ts.translate.SetDef(v)
+    resTr[v], _ = ts.translate.Tr(lang, v)
   }
   return resTr
 }
@@ -197,6 +178,9 @@ func requiredTemplateVars(t *template.Template) ([]string, []error) {
   var res []string
   var errors []error
   var ln *parse.ListNode
+  if t == nil {
+    return res, errors
+  }
   ln = t.Tree.Root
 Node:
   for _, n := range ln.Nodes {

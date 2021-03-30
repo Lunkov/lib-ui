@@ -17,6 +17,7 @@ import (
   "github.com/tdewolff/minify/v2/svg"
   
   "github.com/Lunkov/lib-tr"
+  "github.com/Lunkov/lib-cache"
 )
 
 type UIInfo struct {
@@ -25,67 +26,94 @@ type UIInfo struct {
 }
 
 type UIStat struct {
-  CntPage    int     `json:"cnt_page"`
-  CntForm    int     `json:"cnt_form"`
-  CntView    int     `json:"cnt_view"`
-  CntTr      int     `json:"cnt_tr"`
-  CntLang    int     `json:"cnt_lang"`
+  CntPage    int64     `json:"cnt_page"`
+  CntForm    int64     `json:"cnt_form"`
+  CntView    int64     `json:"cnt_view"`
+  CntTr      int       `json:"cnt_tr"`
+  CntLang    int       `json:"cnt_lang"`
 }
 
-var watcherFiles *watcher.Watcher
-var uimu sync.RWMutex
-var mapJSONs = make(map[string][]byte) // is string
-var mapRenders = make(map[string]string)
-var configTrPath string
-var minifyRender *minify.M
+type UI struct {
+  watcherFiles    *watcher.Watcher
+  uimu             sync.RWMutex
+  mapJSONs         map[string][]byte // is string
+  mapRenders       cache.ICache
+  configTrPath     string
+  minifyRender    *minify.M
+  t               *tr.Tr
+  forms           *Forms
+  views           *Views
+  pages           *Pages
+  functions       *Functions
+  templates       *Templates
+}
 
-func ToJSON(role_name string, lang string, menus []string, forms []string, views []string) []byte {
+func NewUI(templPath string, cfgForms *cache.CacheConfig, cfgViews *cache.CacheConfig, cfgPages *cache.CacheConfig, cfgRenders *cache.CacheConfig) (*UI) {
+  t := tr.New()
+  tmplts := NewTemplates(t, templPath)
+  forms := NewForms(cfgForms, t, tmplts)
+  views := NewViews(cfgViews, t, tmplts)
+  funcs := NewFunctions(t, forms, views)
+  tmplts.SetFunc(funcs)
+  return &UI{
+         forms      : forms,
+         views      : views,
+         pages      : NewPages(cfgPages, t, tmplts),
+         mapJSONs   : make(map[string][]byte), // is string
+         mapRenders : cache.NewConfig(cfgRenders),
+         t          : t,
+         functions  : funcs,
+         templates  : tmplts,
+  }
+}
+
+func (u *UI) ToJSON(role_name string, lang string, menus []string, forms []string, views []string) []byte {
   index := role_name + "#" + lang
-  ijson, ok := mapJSONs[index]
+  ijson, ok := u.mapJSONs[index]
   if ok {
     return ijson
   }
   var tui UIInfo
-  tui.Form = formFilter(lang, forms)
-  tui.View = viewFilter(lang, views)
+  tui.Form = u.forms.Filter(lang, forms)
+  tui.View = u.views.Filter(lang, views)
   resJSON, _ := json.Marshal(tui)
-  uimu.Lock()
-  mapJSONs[index] = resJSON
-  uimu.Unlock()
+  u.uimu.Lock()
+  u.mapJSONs[index] = resJSON
+  u.uimu.Unlock()
   return resJSON
 }
 
-func Init(configPath string, enableWatcher bool, enableMinify bool) {
-  minifyRender = nil
+func (u *UI) Init(configPath string, enableWatcher bool, enableMinify bool) {
+  u.minifyRender = nil
   if enableMinify {
-    minifyRender = minify.New()
-    minifyRender.AddFunc("text/css", css.Minify)
-    minifyRender.AddFunc("text/html", html.Minify)
-    minifyRender.AddFunc("image/svg+xml", svg.Minify)
-    minifyRender.AddFuncRegexp(regexp.MustCompile("^(application|text)/(x-)?(java|ecma)script$"), js.Minify)
+    u.minifyRender = minify.New()
+    u.minifyRender.AddFunc("text/css", css.Minify)
+    u.minifyRender.AddFunc("text/html", html.Minify)
+    u.minifyRender.AddFunc("image/svg+xml", svg.Minify)
+    u.minifyRender.AddFuncRegexp(regexp.MustCompile("^(application|text)/(x-)?(java|ecma)script$"), js.Minify)
     glog.Infof("LOG: Enable Minify HTML")
   }
   
-  loadAll(configPath)
+  u.loadAll(configPath)
   
   if enableWatcher {
-    watcherFiles = watcher.New()
-    watcherFiles.SetMaxEvents(1)
-    watcherFiles.FilterOps(watcher.Rename, watcher.Move, watcher.Remove, watcher.Create, watcher.Write)
+    u.watcherFiles = watcher.New()
+    u.watcherFiles.SetMaxEvents(1)
+    u.watcherFiles.FilterOps(watcher.Rename, watcher.Move, watcher.Remove, watcher.Create, watcher.Write)
     go func() {
       for {
         select {
-        case event := <-watcherFiles.Event:	
+        case event := <-u.watcherFiles.Event:	
           if glog.V(9) {
             glog.Infof("DBG: Watcher Event: %v", event)
           }
           // Ignore New Translate Files
           if filepath.Ext(event.Name()) != ".!yaml" {
-            loadAll(configPath)
+            u.loadAll(configPath)
           }
-        case err := <-watcherFiles.Error:
+        case err := <-u.watcherFiles.Error:
           glog.Fatalf("ERR: Watcher Event: %v", err)
-        case <-watcherFiles.Closed:
+        case <-u.watcherFiles.Closed:
           glog.Infof("LOG: Watcher Close")
           return
         }
@@ -93,31 +121,31 @@ func Init(configPath string, enableWatcher bool, enableMinify bool) {
     }()
     // Start the watching process - it'll check for changes every 100ms.
     glog.Infof("LOG: Watcher Start (%s)", configPath)
-    if err := watcherFiles.AddRecursive(configPath); err != nil {
+    if err := u.watcherFiles.AddRecursive(configPath); err != nil {
       glog.Fatalf("ERR: Watcher AddRecursive: %v", err)
     }
-    if err := watcherFiles.AddRecursive("./templates/"); err != nil {
+    if err := u.watcherFiles.AddRecursive("./templates/"); err != nil {
       glog.Fatalf("ERR: Watcher AddRecursive: %v", err)
     }
     
     if glog.V(9) {
       // Print a list of all of the files and folders currently
       // being watched and their paths.
-      for path, f := range watcherFiles.WatchedFiles() {
+      for path, f := range u.watcherFiles.WatchedFiles() {
         glog.Infof("DBG: WATCH FILE: %s: %s\n", path, f.Name())
       }
     }
 	  go func() {
-      if err := watcherFiles.Start(time.Millisecond * 100); err != nil {
+      if err := u.watcherFiles.Start(time.Millisecond * 100); err != nil {
         glog.Fatalf("ERR: Watcher Start: %v", err)
       }
     }()
   }
 }
 
-func makeMimiHTML(s string) string {
-  if minifyRender != nil {
-    res, err := minifyRender.String("text/html", s)
+func (u *UI) makeMimiHTML(s string) string {
+  if u.minifyRender != nil {
+    res, err := u.minifyRender.String("text/html", s)
     if err != nil {
       glog.Errorf("ERR: HTML Minify: %v", err)
     } else {
@@ -127,68 +155,66 @@ func makeMimiHTML(s string) string {
   return s
 }
 
-func loadAll(configPath string) {
+func (u *UI) loadAll(configPath string) {
   // Clear cache
-  mapJSONs = make(map[string][]byte) // is string
-  mapRenders = make(map[string]string)
+  u.mapJSONs = make(map[string][]byte) // is string
+  u.mapRenders.Clear()
 
-  tr.LoadLangs(configPath + "/langs.yaml")
-  tr.LoadTrs(configPath + "/tr")
-  formInit(configPath + "/forms")
-  viewInit(configPath + "/views")
-  pageInit(configPath + "/pages")
+  u.configTrPath = configPath + "/tr"
 
-  configTrPath = configPath + "/tr"
-  tr.SaveNew(configTrPath)
+  u.t.LoadLangs(configPath + "/langs.yaml")
+  u.t.LoadTrs(u.configTrPath)
+  u.forms.Load(configPath)
+  u.views.Load(configPath)
+  u.pages.Load(configPath)
+
+  u.t.SaveNew(u.configTrPath)
   
-  glog.Infof("LOG: Load Langs: %d", tr.LangCount())
-  glog.Infof("LOG: Load Tr: %d",    tr.Count())
-  glog.Infof("LOG: Load Forms: %d", formCount())
-  glog.Infof("LOG: Load Views: %d", viewCount())
-  glog.Infof("LOG: Load Pages: %d", pageCount())
+  glog.Infof("LOG: Load Langs: %d", u.t.LangCount())
+  glog.Infof("LOG: Load Tr: %d",    u.t.Count())
+  glog.Infof("LOG: Load Forms: %d", u.forms.Count())
+  glog.Infof("LOG: Load Views: %d", u.views.Count())
+  glog.Infof("LOG: Load Pages: %d", u.pages.Count())
 }
 
-func GetStat() UIStat {
-  return UIStat{
-                CntPage: pageCount(),
-                CntForm: formCount(),
-                CntView: viewCount(),
-                CntTr:   tr.Count(),
-                CntLang: tr.LangCount(),
+func (u *UI) GetStat() *UIStat {
+  return &UIStat{
+                CntPage: u.pages.Count(),
+                CntForm: u.forms.Count(),
+                CntView: u.views.Count(),
+                CntTr:   u.t.Count(),
+                CntLang: u.t.LangCount(),
   }
 }
 
-func RenderForm(lang string, form_code string, style string, isModal bool, data *map[string]interface{}) string {
-  index := indexForm(lang, form_code, style, isModal, data)
-  uimu.RLock()
-  rForm, ok := mapRenders[index]
-  uimu.RUnlock()
+func (u *UI) RenderForm(form_code string, lang string, style string, isModal bool, data *map[string]interface{}) string {
+  index := u.forms.index(lang, form_code, style, isModal, data)
+  var render string
+  rForm, ok := u.mapRenders.Get(index, &render)
   if ok {
-    return rForm
+    render, _ = rForm.(string)
+    return render
   }
-  render := renderForm(lang, form_code, style, isModal, data)
-  uimu.Lock()
-  mapRenders[index] = makeMimiHTML(render)
-  tr.SaveNew(configTrPath)
-  uimu.Unlock()
-  return mapRenders[index]
+  render = u.makeMimiHTML(u.forms.Render(form_code, lang, style, isModal, data))
+  u.mapRenders.Set(index,  render)
+  u.t.SaveNew(u.configTrPath)
+  return render
 }
 
-func RenderPage(lang string, page_code string, style string, private bool, data *map[string]interface{}) string {
-  index := indexPage(lang, page_code, style, private)
-  uimu.RLock()
-  rPage, ok := mapRenders[index]
-  uimu.RUnlock()
+func (u *UI) RenderPage(page_code string, lang string, style string, private bool, data *map[string]interface{}) string {
+  index := u.pages.index(lang, page_code, style, private)
+  var render string
+  rPage, ok := u.mapRenders.Get(index, &render)
   if ok {
-    return rPage
+    render, _ = rPage.(string)
+    return render
   }
-  render, ok := renderPage(lang, page_code, style, private, data)
+  rend, ok := u.pages.Render(page_code, lang, style, private, data)
   if ok {
-    uimu.Lock()
-    mapRenders[index] = makeMimiHTML(render)
-    uimu.Unlock()
-    defer tr.SaveNew(configTrPath)
-    return mapRenders[index]
+    render = u.makeMimiHTML(rend)
+    u.mapRenders.Set(index, render)
+    defer u.t.SaveNew(u.configTrPath)
+    return render
   }
   return "!! ERROR: RENDER PAGE(" + page_code + ") !!"
 }
