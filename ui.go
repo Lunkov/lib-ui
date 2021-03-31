@@ -143,6 +143,10 @@ func (u *UI) Init(configPath string, enableWatcher bool, enableMinify bool) {
   }
 }
 
+func (u *UI) GetLangList() *map[string]map[string]string {
+  return u.t.GetList()
+}
+
 func (u *UI) makeMimiHTML(s string) string {
   if u.minifyRender != nil {
     res, err := u.minifyRender.String("text/html", s)
