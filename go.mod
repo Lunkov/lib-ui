@@ -7,6 +7,7 @@ require (
 	github.com/Lunkov/lib-env v0.0.0-20210314124046-885d8975482c
 	github.com/Lunkov/lib-ref v0.0.0-20210329183231-3e3304abcd4b
 	github.com/Lunkov/lib-tr v0.0.0-20210323154908-5308931b2c1a
+	github.com/golang/gddo v0.0.0-20210115222349-20d68f94ee1f
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/google/uuid v1.2.0
 	github.com/jinzhu/copier v0.2.8
