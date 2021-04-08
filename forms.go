@@ -87,7 +87,7 @@ func (f *Forms) Load(configPath string) {
   env.LoadFromFiles(configPath, ".form", f.load)
 }
 
-func (f *Forms) FormGetParameters(r *http.Request, storagePath string, subPath string) (map[string]interface{}, bool) {
+func (f *Forms) GetParameters(r *http.Request, storagePath string, subPath string) (map[string]interface{}, bool) {
   params := make(map[string]interface{})
   /* TODO
    * code_form string, 
