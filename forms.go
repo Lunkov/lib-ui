@@ -121,7 +121,7 @@ func (f *Forms) GetParameters(r *http.Request, storagePath string, subPath strin
       glog.Infof("DBG: UploadFile URL '%s': `%v`", r.URL.Path, part.FileName())
     }
     
-    filename := storagePath + part.FileName()
+    filename := storagePath + subPath + part.FileName()
     dst, err := os.Create(filename)
     defer dst.Close()
 
