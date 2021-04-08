@@ -49,9 +49,9 @@ type UI struct {
   configTrPath     string
   minifyRender    *minify.M
   t               *tr.Tr
-  forms           *Forms
-  views           *Views
-  pages           *Pages
+  Forms           *Forms
+  Views           *Views
+  Pages           *Pages
   functions       *Functions
   templates       *Templates
 }
@@ -64,9 +64,9 @@ func NewUI(templPath string, cfgForms *cache.CacheConfig, cfgViews *cache.CacheC
   funcs := NewFunctions(t, forms, views)
   tmplts.SetFunc(funcs)
   return &UI{
-         forms      : forms,
-         views      : views,
-         pages      : NewPages(cfgPages, t, tmplts),
+         Forms      : forms,
+         Views      : views,
+         Pages      : NewPages(cfgPages, t, tmplts),
          mapJSONs   : make(map[string][]byte), // is string
          mapRenders : cache.NewConfig(cfgRenders),
          t          : t,
@@ -82,8 +82,8 @@ func (u *UI) ToJSON(role_name string, lang string, menus []string, forms []strin
     return ijson
   }
   var tui UIInfo
-  tui.Form = u.forms.Filter(lang, forms)
-  tui.View = u.views.Filter(lang, views)
+  tui.Form = u.Forms.Filter(lang, forms)
+  tui.View = u.Views.Filter(lang, views)
   resJSON, _ := json.Marshal(tui)
   u.uimu.Lock()
   u.mapJSONs[index] = resJSON
@@ -176,52 +176,52 @@ func (u *UI) loadAll(configPath string) {
 
   u.t.LoadLangs(configPath + "/langs.yaml")
   u.t.LoadTrs(u.configTrPath)
-  u.forms.Load(configPath)
-  u.views.Load(configPath)
-  u.pages.Load(configPath)
+  u.Forms.Load(configPath)
+  u.Views.Load(configPath)
+  u.Pages.Load(configPath)
 
   u.t.SaveNew(u.configTrPath)
   
   glog.Infof("LOG: Load Langs: %d", u.t.LangCount())
   glog.Infof("LOG: Load Tr: %d",    u.t.Count())
-  glog.Infof("LOG: Load Forms: %d", u.forms.Count())
-  glog.Infof("LOG: Load Views: %d", u.views.Count())
-  glog.Infof("LOG: Load Pages: %d", u.pages.Count())
+  glog.Infof("LOG: Load Forms: %d", u.Forms.Count())
+  glog.Infof("LOG: Load Views: %d", u.Views.Count())
+  glog.Infof("LOG: Load Pages: %d", u.Pages.Count())
 }
 
 func (u *UI) GetStat() *UIStat {
   return &UIStat{
-                CntPage: u.pages.Count(),
-                CntForm: u.forms.Count(),
-                CntView: u.views.Count(),
+                CntPage: u.Pages.Count(),
+                CntForm: u.Forms.Count(),
+                CntView: u.Views.Count(),
                 CntTr:   u.t.Count(),
                 CntLang: u.t.LangCount(),
   }
 }
 
 func (u *UI) RenderForm(form_code string, lang string, style string, isModal bool, data *map[string]interface{}) string {
-  index := u.forms.index(lang, form_code, style, isModal, data)
+  index := u.Forms.index(lang, form_code, style, isModal, data)
   var render string
   rForm, ok := u.mapRenders.Get(index, &render)
   if ok {
     render, _ = rForm.(string)
     return render
   }
-  render = u.makeMimiHTML(u.forms.Render(form_code, lang, style, isModal, data))
+  render = u.makeMimiHTML(u.Forms.Render(form_code, lang, style, isModal, data))
   u.mapRenders.Set(index,  render)
   u.t.SaveNew(u.configTrPath)
   return render
 }
 
 func (u *UI) RenderPage(page_code string, lang string, style string, private bool, data *map[string]interface{}) string {
-  index := u.pages.index(lang, page_code, style, private)
+  index := u.Pages.index(lang, page_code, style, private)
   var render string
   rPage, ok := u.mapRenders.Get(index, &render)
   if ok {
     render, _ = rPage.(string)
     return render
   }
-  rend, ok := u.pages.Render(page_code, lang, style, private, data)
+  rend, ok := u.Pages.Render(page_code, lang, style, private, data)
   if ok {
     render = u.makeMimiHTML(rend)
     u.mapRenders.Set(index, render)
