@@ -64,6 +64,11 @@ func fileNameWithoutExtension(fileName string) string {
 
 func (ts *Templates) appendBaseTemplate(t *template.Template, name string, path string, style string, lang string) *template.Template {
   scanPath := fmt.Sprintf("%s/%s/%s/base/", ts.templPath, style, path)
+  scanPath, err := filepath.Abs(scanPath)
+  if err != nil {
+    glog.Errorf("ERR: Get AbsPath(%s): %v", scanPath, err)
+    return nil
+  }
   count := 0
   errScan := filepath.Walk(scanPath, func(filename string, f os.FileInfo, err error) error {
     if f != nil && f.IsDir() == false {
@@ -116,7 +121,12 @@ func (ts *Templates) Get(name string, path string, style string, lang string) *t
   }
   var err error
 
-  filename := fmt.Sprintf("%s/%s/%s/%s.html", ts.templPath, style, path, name)
+  filen := fmt.Sprintf("%s/%s/%s/%s.html", ts.templPath, style, path, name)
+  filename, err := filepath.Abs(filen)
+  if err != nil {
+    glog.Errorf("ERR: Get AbsPath(%s): %v", filen, err)
+    return nil
+  }
  
   contents, err := ioutil.ReadFile(filename)
   if err != nil {
